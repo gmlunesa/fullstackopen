@@ -1,20 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
 
   const [newSearch, setNewSearch] = useState("");
   const [showAll, setShowAll] = useState(true);
 
+  // Define person-fetch hook
+  const personHook = () => {
+    axios.get("http://localhost:3001/persons").then(({ data }) => {
+      setPersons(data);
+    });
+  };
+
+  useEffect(personHook, []);
+
   // This function is called after clicking submit.
-  const addPerson = (event) => {
+  function addPerson(event) {
     event.preventDefault();
 
     // Find the index of the object that contains the same `name`, if any
@@ -37,7 +45,7 @@ const App = () => {
       setNewName("");
       setNewNumber("");
     }
-  };
+  }
 
   // This function is called when there are changes in the name input
   const handleNameChange = (event) => {
