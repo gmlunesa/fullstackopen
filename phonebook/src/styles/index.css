@@ -1,0 +1,29 @@
+.success {
+  color: olivedrab;
+  background: whitesmoke;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: palevioletred;
+  background: #f5f5f5;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.deleted {
+  color: turquoise;
+  background: #f5f5f5;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}

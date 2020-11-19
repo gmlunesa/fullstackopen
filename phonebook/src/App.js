@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 import phoneBookService from "./services/phoneBookService";
+
+import "./styles/index.css";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,6 +14,8 @@ const App = () => {
 
   const [newSearch, setNewSearch] = useState("");
   const [showAll, setShowAll] = useState(true);
+
+  const [alertMessage, setAlertMessage] = useState({});
 
   // Define person-fetch hook
   const personHook = () => {
@@ -41,16 +46,42 @@ const App = () => {
           number: newNumber,
         };
 
+        console.log(nameObject, persons[personIndex]);
+
         // Update person on the server
         // Then, update persons array on the local state
         phoneBookService
           .update(persons[personIndex].id, nameObject)
           .then((response) => {
+            // Modify the object in the array that needs to be updated
             setPersons(
               persons.map((person) =>
                 person.name === response.name ? response : person
               )
             );
+
+            // Set the alert messages detail accordingly
+            setAlertMessage({
+              message: `Successfully updated ${response.name}.`,
+              className: "success",
+            });
+
+            // Set the timeout so the notification disappear
+            setTimeout(() => {
+              setAlertMessage({});
+            }, 5000);
+          })
+          .catch((error) => {
+            // Set the alert messages detail accordingly
+            setAlertMessage({
+              message: `Information on ${nameObject.name} has already been removed from the server.`,
+              className: "error",
+            });
+
+            // Set the timeout so the notification disappear
+            setTimeout(() => {
+              setAlertMessage({});
+            }, 5000);
           });
       }
     } else {
@@ -65,11 +96,22 @@ const App = () => {
         // Add new object to the persons array
         setPersons(persons.concat(nameObject));
 
-        // Reset values in the input boxes
-        setNewName("");
-        setNewNumber("");
+        // Set the alert messages detail accordingly
+        setAlertMessage({
+          message: `Successfully added ${nameObject.name}.`,
+          className: "success",
+        });
+
+        // Set the timeout so the notification disappear
+        setTimeout(() => {
+          setAlertMessage({});
+        }, 5000);
       });
     }
+
+    // Reset values in the input boxes
+    setNewName("");
+    setNewNumber("");
   }
 
   // This function is called when there are changes in the name input
@@ -108,7 +150,12 @@ const App = () => {
   const handleDeleteClick = (personToDelete) => {
     if (window.confirm(`Delete ${personToDelete.name}?`)) {
       // Delete the person from the server
-      phoneBookService.deletePerson(personToDelete.id);
+      phoneBookService.deletePerson(personToDelete.id).then(() => {
+        setAlertMessage({
+          message: `Successfully deleted ${personToDelete.name}.`,
+          className: "deleted",
+        });
+      });
 
       // Delete the person from our local state
       setPersons(
@@ -120,6 +167,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification alert={alertMessage} />
       <Filter value={newSearch} onChange={handleSearchChange} />
       <h2>Add a new person</h2>
       <PersonForm
