@@ -92,21 +92,37 @@ const App = () => {
       };
 
       // Add new person object to the server
-      phoneBookService.add(nameObject).then((addedObject) => {
-        // Add new object to the persons array
-        setPersons(persons.concat(addedObject));
+      phoneBookService
+        .add(nameObject)
+        .then((addedObject) => {
+          // Add new object to the persons array
+          setPersons(persons.concat(addedObject));
 
-        // Set the alert messages detail accordingly
-        setAlertMessage({
-          message: `Successfully added ${nameObject.name}.`,
-          className: "success",
+          // Set the alert messages detail accordingly
+          setAlertMessage({
+            message: `Successfully added ${nameObject.name}.`,
+            className: "success",
+          });
+
+          // Set the timeout so the notification disappear
+          setTimeout(() => {
+            setAlertMessage({});
+          }, 5000);
+        })
+        .catch((error) => {
+          console.log("hey!");
+          console.log(error.response.data);
+
+          setAlertMessage({
+            message: error.response.data.error,
+            className: "error",
+          });
+
+          // Set the timeout so the notification disappear
+          setTimeout(() => {
+            setAlertMessage({});
+          }, 5000);
         });
-
-        // Set the timeout so the notification disappear
-        setTimeout(() => {
-          setAlertMessage({});
-        }, 5000);
-      });
     }
 
     // Reset values in the input boxes
