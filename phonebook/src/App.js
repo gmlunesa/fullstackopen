@@ -92,9 +92,9 @@ const App = () => {
       };
 
       // Add new person object to the server
-      phoneBookService.add(nameObject).then(() => {
+      phoneBookService.add(nameObject).then((addedObject) => {
         // Add new object to the persons array
-        setPersons(persons.concat(nameObject));
+        setPersons(persons.concat(addedObject));
 
         // Set the alert messages detail accordingly
         setAlertMessage({
@@ -155,6 +155,11 @@ const App = () => {
           message: `Successfully deleted ${personToDelete.name}.`,
           className: "deleted",
         });
+
+        // Set the timeout so the notification disappear
+        setTimeout(() => {
+          setAlertMessage({});
+        }, 5000);
       });
 
       // Delete the person from our local state
