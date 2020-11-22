@@ -21,4 +21,5 @@ const deletePerson = (id) => {
   return request.then((response) => response);
 };
 
-export default { getAll, add, update, deletePerson };
+const phoneBookService = { getAll, add, update, deletePerson };
+export default phoneBookService;
